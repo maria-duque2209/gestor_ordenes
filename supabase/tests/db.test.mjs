@@ -387,3 +387,101 @@ test("clientes: no se repite el documento, aunque cambie el formato", async () =
     tx.query(`insert into public.clients (nombre, documento) values ('Sin doc 1', null), ('Sin doc 2', '')`),
   );
 });
+
+const ORDEN_BASE = {
+  tipo_producto: "subwoofer",
+  descripcion: "Caja prueba",
+  alto: "40", ancho: "60", profundidad: "35", unidad: "cm",
+  especificaciones: { potencia: "500 W" },
+  prioridad: "alta",
+  fecha_inicio: "2026-11-01", fecha_entrega: "2026-11-20",
+};
+
+test("guardar_orden: crea orden + cliente nuevo + responsables + precio en una transacción", async () => {
+  const res = await as(db, "ventas", async (tx) =>
+    (
+      await tx.query(
+        `select public.guardar_orden(null, $1, $2::uuid[], $3, 1000000, 400000) as r`,
+        [ORDEN_BASE, [USERS.taller1, USERS.taller2], { nombre: "Cliente RPC", documento: "RPC-1" }],
+      )
+    ).rows[0].r,
+  );
+  assert.match(res.numero, /^OP-\d{4}$/);
+  const { rows } = await db.query(
+    `select o.prioridad, c.nombre, p.saldo,
+            (select count(*)::int from public.order_assignees a where a.order_id = o.id) as resp
+     from public.orders o join public.clients c on c.id = o.client_id
+     left join public.order_pricing p on p.order_id = o.id where o.id = $1`,
+    [res.id],
+  );
+  assert.equal(rows[0].nombre, "Cliente RPC");
+  assert.equal(rows[0].resp, 2);
+  assert.equal(Number(rows[0].saldo), 600000);
+  assert.equal(rows[0].prioridad, "alta");
+
+  // Editar sin cliente → error
+  await rejects(
+    as(db, "ventas", (tx) =>
+      tx.query(`select public.guardar_orden($1, $2, $3::uuid[])`, [res.id, ORDEN_BASE, [USERS.taller1]]),
+    ),
+    /Selecciona o crea un cliente/,
+  );
+
+  // Editar: quitar un responsable, cambiar color
+  const clientId = (await db.query(`select client_id from public.orders where id = $1`, [res.id])).rows[0].client_id;
+  await as(db, "ventas", (tx) =>
+    tx.query(`select public.guardar_orden($1, $2, $3::uuid[])`, [
+      res.id,
+      { ...ORDEN_BASE, client_id: clientId, color: "Rojo" },
+      [USERS.taller1],
+    ]),
+  );
+  const after = await db.query(
+    `select color, (select array_agg(user_id) from public.order_assignees where order_id = $1) as resp,
+            (select precio from public.order_pricing where order_id = $1) as precio
+     from public.orders where id = $1`,
+    [res.id],
+  );
+  assert.equal(after.rows[0].color, "Rojo");
+  assert.deepEqual(after.rows[0].resp, [USERS.taller1]);
+  assert.equal(Number(after.rows[0].precio), 1000000, "sin p_precio no se toca el precio");
+});
+
+test("guardar_orden: si algo falla no se crea nada (ni cliente ni orden)", async () => {
+  const antes = (await db.query(`select (select count(*) from public.orders)::int o, (select count(*) from public.clients)::int c`)).rows[0];
+  await rejects(
+    as(db, "ventas", (tx) =>
+      tx.query(`select public.guardar_orden(null, $1, '{}', $2, 100, 500)`, [
+        ORDEN_BASE,
+        { nombre: "No debe quedar" },
+      ]),
+    ),
+    /order_pricing_anticipo_chk/,
+  );
+  const despues = (await db.query(`select (select count(*) from public.orders)::int o, (select count(*) from public.clients)::int c`)).rows[0];
+  assert.deepEqual(despues, antes);
+});
+
+test("guardar_orden: taller no puede usarla", async () => {
+  await rejects(
+    as(db, "taller1", (tx) =>
+      tx.query(`select public.guardar_orden(null, $1, '{}', $2)`, [ORDEN_BASE, { nombre: "X" }]),
+    ),
+    /No tienes permiso/,
+  );
+});
+
+test("guardar_orden: no se puede asignar a un usuario inactivo", async () => {
+  await db.query(`update public.profiles set activo = false where id = $1`, [USERS.taller2]);
+  await rejects(
+    as(db, "ventas", (tx) =>
+      tx.query(`select public.guardar_orden(null, $1, $2::uuid[], $3)`, [
+        ORDEN_BASE,
+        [USERS.taller2],
+        { nombre: "Cliente Z" },
+      ]),
+    ),
+    /inactivo/,
+  );
+  await db.query(`update public.profiles set activo = true where id = $1`, [USERS.taller2]);
+});

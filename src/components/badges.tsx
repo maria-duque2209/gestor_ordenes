@@ -1,5 +1,20 @@
-import { ESTADO_LABEL, ROL_LABEL } from "@/lib/labels";
-import type { EstadoOrden, Rol } from "@/lib/types";
+import { ESTADO_LABEL, PRIORIDAD_LABEL, ROL_LABEL } from "@/lib/labels";
+import type { EstadoOrden, Prioridad, Rol } from "@/lib/types";
+
+const PRIORIDAD_STYLE: Record<Prioridad, string> = {
+  baja: "bg-slate-100 text-slate-600",
+  normal: "bg-slate-100 text-slate-800",
+  alta: "bg-orange-100 text-orange-800",
+  urgente: "bg-red-600 text-white",
+};
+
+export function PrioridadBadge({ prioridad }: { prioridad: Prioridad }) {
+  return (
+    <span className={`inline-flex whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${PRIORIDAD_STYLE[prioridad]}`}>
+      {PRIORIDAD_LABEL[prioridad]}
+    </span>
+  );
+}
 
 const ESTADO_STYLE: Record<EstadoOrden, string> = {
   pendiente: "bg-slate-100 text-slate-700",

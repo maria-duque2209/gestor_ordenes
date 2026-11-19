@@ -4,7 +4,7 @@ Aplicación web para crear, asignar, seguir e imprimir órdenes de producción d
 
 **Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Supabase (PostgreSQL, Auth, Storage, RLS)
 
-> Estado: **Fase 2 (usuarios y clientes)**. Este README se completará en la Fase 7 con las instrucciones de uso y despliegue.
+> Estado: **Fase 3 (órdenes)**. Este README se completará en la Fase 7 con las instrucciones de uso y despliegue.
 
 ## Requisitos
 
@@ -39,7 +39,8 @@ Opción A (sin instalar nada): en _SQL Editor_, ejecuta en orden el contenido de
 2. `supabase/migrations/20261119000002_seguridad_rls.sql`
 3. `supabase/migrations/20261119000003_precios.sql`
 4. `supabase/migrations/20261119000004_documento_unico.sql`
-5. (opcional) `supabase/seed.sql`, con clientes de ejemplo
+5. `supabase/migrations/20261119000005_guardar_orden.sql`
+6. (opcional) `supabase/seed.sql`, con clientes de ejemplo
 
 Opción B (CLI de Supabase):
 

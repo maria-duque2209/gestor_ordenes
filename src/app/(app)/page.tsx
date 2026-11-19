@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ESTADO_LABEL, ROL_LABEL } from "@/lib/labels";
+import { hoyISO } from "@/lib/format";
 import type { EstadoOrden } from "@/lib/types";
 import { PageHeader } from "@/components/page-header";
 
@@ -54,7 +55,7 @@ async function getResumen() {
 
   if (error) throw new Error(`No se pudo cargar el resumen: ${error.message}`);
 
-  const hoy = new Date().toISOString().slice(0, 10);
+  const hoy = hoyISO();
   const porEstado: Partial<Record<EstadoOrden, number>> = {};
   let atrasadas = 0;
   for (const o of data ?? []) {
