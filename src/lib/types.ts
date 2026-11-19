@@ -23,6 +23,8 @@ export interface Client {
   id: string;
   nombre: string;
   documento: string | null;
+  /** Generado por la BD (sin puntos/guiones/espacios, en mayúsculas); único. */
+  documento_normalizado: string | null;
   telefono: string | null;
   email: string | null;
   direccion: string | null;

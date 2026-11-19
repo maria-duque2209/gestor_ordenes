@@ -45,7 +45,15 @@ export function AppNav({ user, items }: { user: CurrentUser; items: NavItem[] })
       <p className="truncate text-xs text-slate-400">
         {ROL_LABEL[user.rol]} · {user.email}
       </p>
-      <form action={logout} className="mt-3">
+      <Link
+        href="/cuenta"
+        onClick={() => setOpen(false)}
+        className="mt-3 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+      >
+        <Icon name="users" className="h-4 w-4" />
+        Mi cuenta
+      </Link>
+      <form action={logout}>
         <button
           type="submit"
           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white"

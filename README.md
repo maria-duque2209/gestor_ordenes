@@ -4,7 +4,7 @@ Aplicación web para crear, asignar, seguir e imprimir órdenes de producción d
 
 **Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Supabase (PostgreSQL, Auth, Storage, RLS)
 
-> Estado: **Fase 1 (base)**. Este README se completará en la Fase 7 con las instrucciones de uso y despliegue.
+> Estado: **Fase 2 (usuarios y clientes)**. Este README se completará en la Fase 7 con las instrucciones de uso y despliegue.
 
 ## Requisitos
 
@@ -19,6 +19,18 @@ Aplicación web para crear, asignar, seguir e imprimir órdenes de producción d
 2. **Desactiva el registro público:** _Authentication → Sign In / Providers →_ desmarca _Allow new users to sign up_.
    Los usuarios los crea el administrador. Aunque alguien se registrara, su perfil quedaría inactivo.
 
+3. **URLs de Auth:** en _Authentication → URL Configuration_ pon como _Site URL_ la URL de la app
+   (`http://localhost:3000` en desarrollo, la de Vercel en producción) y añádela en _Redirect URLs_.
+4. **Plantilla de invitación:** en _Authentication → Emails → Invite user_, cambia el enlace por:
+
+   ```html
+   <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite&next=/cuenta">Aceptar invitación</a>
+   ```
+
+   Así el usuario entra directamente a «Mi cuenta» para crear su contraseña.
+   El email integrado de Supabase permite pocos envíos por hora. Para uso real, configura un SMTP propio
+   (_Authentication → Emails → SMTP Settings_) o crea los usuarios con contraseña temporal.
+
 ### 2. Aplicar las migraciones
 
 Opción A (sin instalar nada): en _SQL Editor_, ejecuta en orden el contenido de:
@@ -26,7 +38,8 @@ Opción A (sin instalar nada): en _SQL Editor_, ejecuta en orden el contenido de
 1. `supabase/migrations/20261119000001_esquema_inicial.sql`
 2. `supabase/migrations/20261119000002_seguridad_rls.sql`
 3. `supabase/migrations/20261119000003_precios.sql`
-4. (opcional) `supabase/seed.sql`, con clientes de ejemplo
+4. `supabase/migrations/20261119000004_documento_unico.sql`
+5. (opcional) `supabase/seed.sql`, con clientes de ejemplo
 
 Opción B (CLI de Supabase):
 

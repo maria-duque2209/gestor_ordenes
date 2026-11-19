@@ -6,6 +6,7 @@ import { login, type LoginState } from "./actions";
 
 const MENSAJES: Record<string, string> = {
   inactivo: "Tu usuario está desactivado. Contacta con el administrador.",
+  enlace: "El enlace no es válido o ha caducado. Pide al administrador una nueva invitación.",
 };
 
 export function LoginForm() {

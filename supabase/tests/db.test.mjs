@@ -371,3 +371,19 @@ test("precios: el historial los registra, pero el taller no ve esas entradas", a
   assert.ok(taller.length > 0, "el taller sí ve el resto del historial");
   assert.ok(!taller.some((r) => r.accion === "precio_actualizado"));
 });
+
+test("clientes: no se repite el documento, aunque cambie el formato", async () => {
+  await as(db, "ventas", (tx) =>
+    tx.query(`insert into public.clients (nombre, documento) values ('Dup A', '800.555.111-2')`),
+  );
+  await rejects(
+    as(db, "ventas", (tx) =>
+      tx.query(`insert into public.clients (nombre, documento) values ('Dup B', ' 8005551112 ')`),
+    ),
+    /clients_documento_unico/,
+  );
+  // Sin documento sí se permiten varios
+  await as(db, "ventas", (tx) =>
+    tx.query(`insert into public.clients (nombre, documento) values ('Sin doc 1', null), ('Sin doc 2', '')`),
+  );
+});
