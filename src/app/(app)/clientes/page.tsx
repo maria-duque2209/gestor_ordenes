@@ -85,7 +85,7 @@ export default async function ClientesPage({ searchParams }: PageProps<"/cliente
         <div className="card overflow-hidden">
           {/* Tabla en pantallas medianas y grandes */}
           <table className="hidden w-full text-sm md:table">
-            <thead className="bg-slate-50 text-left text-xs font-medium uppercase tracking-wide text-slate-500">
+            <thead className="eyebrow border-b border-slate-100 bg-slate-50/60 text-left">
               <tr>
                 <th className="px-4 py-3">Nombre</th>
                 <th className="px-4 py-3">Documento</th>

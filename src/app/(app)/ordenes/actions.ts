@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getCurrentUser, requireRole } from "@/lib/auth";
@@ -192,4 +193,72 @@ export async function eliminarFoto(photoId: string): Promise<FormState> {
   await supabase.storage.from(BUCKET_FOTOS).remove([foto.storage_path]);
   revalidatePath(`/ordenes/${foto.order_id}`);
   return { ok: true };
+}
+
+const ESTADOS = ["pendiente", "en_produccion", "control_calidad", "terminada", "entregada", "cancelada"] as const;
+
+/** Cambia el estado (y opcionalmente añade una nota). Queda en el historial por trigger. */
+export async function cambiarEstado(
+  orderId: string,
+  estado: string,
+  nota?: string,
+): Promise<FormState> {
+  await getCurrentUser();
+  const r = z.enum(ESTADOS).safeParse(estado);
+  if (!r.success) return { error: "Estado no válido." };
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("cambiar_estado_orden", {
+    p_order_id: orderId,
+    p_estado: r.data,
+    p_nota: nota?.trim() ? nota.trim().slice(0, 2000) : null,
+  });
+  if (error) {
+    if (/Solo un administrador/.test(error.message)) return { error: "Solo un administrador puede cancelar o reabrir una orden." };
+    if (/No tienes acceso/.test(error.message)) return { error: "No tienes acceso a esta orden." };
+    return { error: `No se pudo cambiar el estado: ${error.message}` };
+  }
+
+  revalidatePath(`/ordenes/${orderId}`);
+  revalidatePath("/ordenes");
+  revalidatePath("/tablero");
+  revalidatePath("/");
+  return { ok: true, message: "Estado actualizado." };
+}
+
+export async function cambiarEstadoForm(orderId: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  return cambiarEstado(orderId, String(formData.get("estado") ?? ""), String(formData.get("nota") ?? ""));
+}
+
+export async function agregarNota(orderId: string, _prev: FormState, formData: FormData): Promise<FormState> {
+  const user = await getCurrentUser();
+  const texto = String(formData.get("texto") ?? "").trim();
+  if (!texto) return { fieldErrors: { texto: ["Escribe la nota"] } };
+  if (texto.length > 2000) return { fieldErrors: { texto: ["Máximo 2000 caracteres"] } };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("order_notes").insert({ order_id: orderId, user_id: user.id, texto });
+  if (error) return { error: `No se pudo guardar la nota: ${error.message}` };
+
+  revalidatePath(`/ordenes/${orderId}`);
+  return { ok: true, message: "Nota añadida." };
+}
+
+/** Borra la orden y sus fotos (solo admin). */
+export async function eliminarOrden(orderId: string): Promise<FormState> {
+  await requireRole("admin");
+  const supabase = await createClient();
+
+  const { data: fotos } = await supabase.from("order_photos").select("storage_path").eq("order_id", orderId);
+  const { error, count } = await supabase.from("orders").delete({ count: "exact" }).eq("id", orderId);
+  if (error) return { error: `No se pudo eliminar la orden: ${error.message}` };
+  if (!count) return { error: "No se pudo eliminar la orden (sin permiso o ya no existe)." };
+
+  if (fotos?.length) {
+    await supabase.storage.from(BUCKET_FOTOS).remove(fotos.map((f) => f.storage_path));
+  }
+
+  revalidatePath("/ordenes");
+  revalidatePath("/tablero");
+  redirect("/ordenes?eliminada=1");
 }

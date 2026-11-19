@@ -2,7 +2,7 @@ import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { BUCKET_FOTOS } from "@/lib/photos-constants";
 import type { CurrentUser } from "@/lib/auth";
-import type { Client, Order, OrderPhoto, OrderPricing, Profile } from "@/lib/types";
+import type { Client, Order, OrderNote, OrderPhoto, OrderPricing, Profile } from "@/lib/types";
 
 export type Responsable = Pick<Profile, "id" | "nombre" | "email" | "rol">;
 
@@ -12,6 +12,7 @@ export interface OrdenDetalle extends Order {
   responsables: Responsable[];
   precio: OrderPricing | null;
   fotos: (OrderPhoto & { url: string | null; autor: string | null })[];
+  notas: (OrderNote & { autor: string | null })[];
 }
 
 /** Carga una orden con todo lo necesario para el detalle, el formulario o el PDF. RLS decide si se ve. */
@@ -19,7 +20,7 @@ export async function getOrden(id: string, user: CurrentUser): Promise<OrdenDeta
   const supabase = await createClient();
   const verPrecio = user.rol === "admin" || user.rol === "ventas";
 
-  const [ordenRes, fotosRes, precioRes] = await Promise.all([
+  const [ordenRes, fotosRes, precioRes, notasRes] = await Promise.all([
     supabase
       .from("orders")
       .select(
@@ -38,6 +39,11 @@ export async function getOrden(id: string, user: CurrentUser): Promise<OrdenDeta
     verPrecio
       ? supabase.from("order_pricing").select("*").eq("order_id", id).maybeSingle()
       : Promise.resolve({ data: null }),
+    supabase
+      .from("order_notes")
+      .select("*, autor:profiles (nombre)")
+      .eq("order_id", id)
+      .order("created_at", { ascending: false }),
   ]);
 
   if (ordenRes.error || !ordenRes.data) return null;
@@ -71,6 +77,10 @@ export async function getOrden(id: string, user: CurrentUser): Promise<OrdenDeta
       .sort((a, b) => a.nombre.localeCompare(b.nombre)),
     precio: (precioRes.data as OrderPricing | null) ?? null,
     fotos: fotosRaw.map(({ autor, ...f }) => ({ ...f, url: urls[f.storage_path] ?? null, autor: autor?.nombre ?? null })),
+    notas: ((notasRes.data ?? []) as (OrderNote & { autor: { nombre: string } | null })[]).map(({ autor, ...n }) => ({
+      ...n,
+      autor: autor?.nombre ?? null,
+    })),
   };
 }
 

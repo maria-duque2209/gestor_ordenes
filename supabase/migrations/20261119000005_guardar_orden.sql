@@ -123,3 +123,5 @@ $$;
 
 revoke execute on function public.guardar_orden(uuid, jsonb, uuid[], jsonb, numeric, numeric) from anon, public;
 grant  execute on function public.guardar_orden(uuid, jsonb, uuid[], jsonb, numeric, numeric) to authenticated;
+
+grant execute on function public.guardar_orden(uuid, jsonb, uuid[], jsonb, numeric, numeric) to service_role;

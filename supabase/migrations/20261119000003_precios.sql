@@ -73,6 +73,7 @@ alter table public.order_pricing enable row level security;
 
 revoke all on public.order_pricing from anon;
 grant select, insert, update, delete on public.order_pricing to authenticated;
+grant all on public.order_pricing to service_role;
 revoke execute on function public.order_pricing_before_write() from anon, public, authenticated;
 revoke execute on function public.order_pricing_audit()        from anon, public, authenticated;
 

@@ -18,7 +18,7 @@ export function PrioridadBadge({ prioridad }: { prioridad: Prioridad }) {
 
 const ESTADO_STYLE: Record<EstadoOrden, string> = {
   pendiente: "bg-slate-100 text-slate-700",
-  en_produccion: "bg-sky-100 text-sky-800",
+  en_produccion: "bg-brand-100 text-brand-700",
   control_calidad: "bg-violet-100 text-violet-800",
   terminada: "bg-emerald-100 text-emerald-800",
   entregada: "bg-emerald-600 text-white",
@@ -27,7 +27,10 @@ const ESTADO_STYLE: Record<EstadoOrden, string> = {
 
 export function EstadoBadge({ estado }: { estado: EstadoOrden }) {
   return (
-    <span className={`inline-flex whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${ESTADO_STYLE[estado]}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${ESTADO_STYLE[estado]}`}
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />
       {ESTADO_LABEL[estado]}
     </span>
   );

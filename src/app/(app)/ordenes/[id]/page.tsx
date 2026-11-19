@@ -4,9 +4,13 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { getOrden } from "@/lib/orders";
 import { EstadoBadge, PrioridadBadge, RolBadge } from "@/components/badges";
-import { diasHasta, formatFecha, formatFechaHora, formatMoneda } from "@/lib/format";
+import { formatFecha, formatFechaHora, formatMoneda } from "@/lib/format";
 import { TIPO_PRODUCTO_LABEL, UNIDAD_LABEL } from "@/lib/labels";
+import { estadosPermitidos, alertaEntrega, textoAlerta } from "@/lib/estados";
 import { FotosOrden } from "./fotos";
+import { EstadoForm } from "./estado-form";
+import { NotasOrden } from "./notas";
+import { EliminarOrden } from "./eliminar-orden";
 
 export const metadata: Metadata = { title: "Orden" };
 
@@ -42,8 +46,8 @@ export default async function OrdenPage({ params, searchParams }: PageProps<"/or
   if (!orden) notFound();
 
   const gestiona = user.rol === "admin" || user.rol === "ventas";
-  const abierta = !["terminada", "entregada", "cancelada"].includes(orden.estado);
-  const dias = orden.fecha_entrega ? diasHasta(orden.fecha_entrega) : null;
+  const alerta = alertaEntrega(orden);
+  const permitidos = estadosPermitidos(user.rol, orden.estado);
   const medidas = [orden.alto, orden.ancho, orden.profundidad].some((m) => m !== null)
     ? `${orden.alto ?? "—"} × ${orden.ancho ?? "—"} × ${orden.profundidad ?? "—"} ${UNIDAD_LABEL[orden.unidad]}`
     : null;
@@ -90,13 +94,9 @@ export default async function OrdenPage({ params, searchParams }: PageProps<"/or
           La orden se guardó, pero {String(sp.fotos_error)} foto(s) no se pudieron subir. Inténtalo de nuevo abajo.
         </p>
       )}
-      {abierta && dias !== null && dias <= 3 && (
-        <p role="alert" className={`mb-4 rounded-lg px-4 py-3 text-sm ${dias < 0 ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-900"}`}>
-          {dias < 0
-            ? `Atrasada: la entrega era hace ${-dias} día(s).`
-            : dias === 0
-              ? "La entrega es hoy."
-              : `La entrega es en ${dias} día(s).`}
+      {alerta && (
+        <p role="alert" className={`mb-4 rounded-lg px-4 py-3 text-sm font-medium ${alerta.tipo === "atrasada" ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-900"}`}>
+          {textoAlerta(alerta)} ({formatFecha(orden.fecha_entrega)})
         </p>
       )}
 
@@ -150,14 +150,29 @@ export default async function OrdenPage({ params, searchParams }: PageProps<"/or
               }))}
             />
           </Card>
+
+          <Card title={`Notas de avance (${orden.notas.length})`}>
+            <NotasOrden
+              orderId={orden.id}
+              notas={orden.notas.map((n) => ({ id: n.id, texto: n.texto, autor: n.autor, created_at: n.created_at }))}
+            />
+          </Card>
         </div>
 
         <div className="space-y-6">
+          <Card title="Estado">
+            <div className="mb-4 flex items-center gap-2">
+              <EstadoBadge estado={orden.estado} />
+              <span className="text-xs text-slate-500">desde {formatFechaHora(orden.updated_at)}</span>
+            </div>
+            <EstadoForm orderId={orden.id} actual={orden.estado} permitidos={permitidos} />
+          </Card>
+
           <Card title="Fechas">
             <dl className="space-y-3">
               <Dato label="Inicio">{formatFecha(orden.fecha_inicio)}</Dato>
               <Dato label="Entrega">
-                <span className={abierta && dias !== null && dias < 0 ? "font-semibold text-red-600" : ""}>
+                <span className={alerta?.tipo === "atrasada" ? "font-semibold text-red-600" : ""}>
                   {formatFecha(orden.fecha_entrega)}
                 </span>
               </Dato>
@@ -227,6 +242,19 @@ export default async function OrdenPage({ params, searchParams }: PageProps<"/or
           )}
         </div>
       </div>
+
+      {user.rol === "admin" && (
+        <section className="mt-8 rounded-xl border border-red-200 p-5 sm:p-6">
+          <h2 className="font-semibold text-red-700">Eliminar orden</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Borra la orden, sus fotos, notas e historial. No se puede deshacer. Si solo no se va a fabricar, es mejor
+            cambiar su estado a «Cancelada».
+          </p>
+          <div className="mt-4">
+            <EliminarOrden orderId={orden.id} numero={orden.numero} />
+          </div>
+        </section>
+      )}
     </>
   );
 }

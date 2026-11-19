@@ -20,6 +20,11 @@ export function hoyISO(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: ZONA_HORARIA }).format(new Date());
 }
 
+/** Instante de hace N días, en ISO (para filtrar timestamps). */
+export function haceDiasISO(dias: number): string {
+  return new Date(Date.now() - dias * 86400000).toISOString();
+}
+
 /** Días desde hoy hasta una fecha 'YYYY-MM-DD' (negativo = ya pasó). */
 export function diasHasta(fecha: string): number {
   const aUTC = (iso: string) => {

@@ -5,33 +5,59 @@
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
+/* Paleta del panel: barra lateral azul marino + acento azul. */
+@theme {
+  --color-navy-950: #0b1730;
+  --color-navy-900: #10213f;
+  --color-navy-800: #182d52;
+  --color-navy-700: #233b66;
+  --color-navy-600: #34508a;
+
+  --color-brand-700: #1f4f9e;
+  --color-brand-600: #2a5cad;
+  --color-brand-500: #3a6cc0;
+  --color-brand-300: #6f9be0;
+  --color-brand-200: #b9cdee;
+  --color-brand-100: #e3ebf8;
+  --color-brand-50: #f1f5fb;
+
+  --color-canvas: #eef2f7;
+}
+
 :root {
   color-scheme: light;
 }
 
 body {
-  @apply bg-slate-50 text-slate-900;
+  @apply bg-canvas text-slate-900;
 }
 
 @utility card {
-  @apply rounded-xl border border-slate-200 bg-white shadow-sm;
+  @apply rounded-2xl border border-slate-200/80 bg-white
+    shadow-[0_1px_2px_rgb(15_23_42/0.04),0_12px_28px_-16px_rgb(15_23_42/0.18)];
+}
+
+/* Etiqueta en versalitas, como los títulos de las tarjetas KPI. */
+@utility eyebrow {
+  @apply text-xs font-semibold uppercase tracking-[0.12em] text-slate-500;
 }
 
 @utility input {
   @apply block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base text-slate-900
-    placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10
+    placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/15
     disabled:bg-slate-100 sm:text-sm;
 }
 
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium
-    transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold
+    transition-colors disabled:cursor-not-allowed disabled:opacity-60
+    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500;
 }
 
 @utility btn-primary {
-  @apply btn bg-slate-900 text-white hover:bg-slate-800;
+  @apply btn bg-navy-900 text-white shadow-sm hover:bg-navy-800;
 }
 
 @utility btn-secondary {
-  @apply btn border border-slate-300 bg-white text-slate-700 hover:bg-slate-50;
+  @apply btn border border-slate-300 bg-white text-slate-700 shadow-sm hover:bg-slate-50;
 }

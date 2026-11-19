@@ -20,7 +20,13 @@ revoke all on all tables    in schema public from anon;
 revoke all on all sequences in schema public from anon;
 revoke all on all functions in schema public from anon, public;
 
-grant usage on schema public to authenticated;
+-- Permisos explícitos (no dependen de la opción "Grant API access to new
+-- tables automatically" del proyecto). service_role salta RLS y lo usan los
+-- scripts del servidor (invitar usuarios, semillas).
+grant usage on schema public to authenticated, service_role;
+grant all on all tables    in schema public to service_role;
+grant all on all sequences in schema public to service_role;
+grant execute on all functions in schema public to service_role;
 grant select, insert, update, delete on all tables in schema public to authenticated;
 revoke all on sequence public.orders_numero_seq from authenticated;
 grant execute on function public.current_rol()                   to authenticated;

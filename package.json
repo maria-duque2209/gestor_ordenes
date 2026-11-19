@@ -10,7 +10,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test:db": "node --test supabase/tests/",
     "crear-admin": "node scripts/crear-admin.mjs",
-    "seed:demo": "node scripts/seed-demo.mjs"
+    "seed:demo": "node scripts/seed-demo.mjs",
+    "verificar": "node scripts/verificar-permisos.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

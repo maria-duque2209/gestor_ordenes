@@ -4,7 +4,7 @@ Aplicación web para crear, asignar, seguir e imprimir órdenes de producción d
 
 **Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Supabase (PostgreSQL, Auth, Storage, RLS)
 
-> Estado: **Fase 3 (órdenes)**. Este README se completará en la Fase 7 con las instrucciones de uso y despliegue.
+> Estado: **Fase 4 (seguimiento)**. Este README se completará en la Fase 7 con las instrucciones de uso y despliegue.
 
 ## Requisitos
 

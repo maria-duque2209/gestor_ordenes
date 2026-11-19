@@ -485,3 +485,24 @@ test("guardar_orden: no se puede asignar a un usuario inactivo", async () => {
   );
   await db.query(`update public.profiles set activo = true where id = $1`, [USERS.taller2]);
 });
+
+test("notas: taller escribe en su orden, no en las ajenas ni a nombre de otro", async () => {
+  await as(db, "taller1", (tx) =>
+    tx.query(`insert into public.order_notes (order_id, user_id, texto) values ($1, $2, 'Lijado listo')`, [
+      orderA,
+      USERS.taller1,
+    ]),
+  );
+  await rejects(
+    as(db, "taller2", (tx) =>
+      tx.query(`insert into public.order_notes (order_id, user_id, texto) values ($1, $2, 'x')`, [orderA, USERS.taller2]),
+    ),
+    /row-level security/,
+  );
+  await rejects(
+    as(db, "taller1", (tx) =>
+      tx.query(`insert into public.order_notes (order_id, user_id, texto) values ($1, $2, 'x')`, [orderA, USERS.ventas]),
+    ),
+    /row-level security/,
+  );
+});
