@@ -94,7 +94,7 @@ export function OrdenForm({
               aria-selected={modoCliente === m}
               onClick={() => setModoCliente(m)}
               className={`rounded-md px-3 py-1.5 font-medium ${
-                modoCliente === m ? "bg-navy-900 text-white" : "text-slate-600 hover:text-slate-900"
+                modoCliente === m ? "bg-turbo-900 text-white" : "text-slate-600 hover:text-slate-900"
               }`}
             >
               {m === "existente" ? "Cliente existente" : "Cliente nuevo"}

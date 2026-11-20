@@ -134,7 +134,7 @@ export default async function OrdenesPage({ searchParams }: PageProps<"/ordenes"
 
       <details className="card mb-4 group" open={hayFiltros || undefined}>
         <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium">
-          <span>Filtros{hayFiltros && <span className="ml-2 rounded-full bg-navy-900 px-2 py-0.5 text-xs text-white">activos</span>}</span>
+          <span>Filtros{hayFiltros && <span className="ml-2 rounded-full bg-turbo-900 px-2 py-0.5 text-xs text-white">activos</span>}</span>
           <span className="text-slate-400 group-open:rotate-180">▾</span>
         </summary>
         <form action="/ordenes" className="grid gap-4 border-t border-slate-100 p-4 sm:grid-cols-2 lg:grid-cols-4">

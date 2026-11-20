@@ -31,8 +31,8 @@ async function AppShell({ children }: { children: React.ReactNode }) {
 function ShellSkeleton() {
   return (
     <div className="min-h-dvh lg:pl-72 print:pl-0">
-      <div className="fixed inset-y-0 left-0 hidden w-72 bg-navy-900 lg:block" />
-      <div className="h-14 bg-navy-900 lg:hidden" />
+      <div className="fixed inset-y-0 left-0 hidden w-72 bg-turbo-900 lg:block" />
+      <div className="h-14 bg-turbo-900 lg:hidden" />
       <div className="hidden h-[72px] border-b border-slate-200 bg-white lg:block" />
       <div className="mx-auto max-w-7xl animate-pulse space-y-4 px-4 pt-6 sm:px-6 lg:px-8 lg:pt-8">
         <div className="h-8 w-56 rounded bg-slate-200" />

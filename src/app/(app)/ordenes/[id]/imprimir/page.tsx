@@ -6,6 +6,7 @@ import { getOrden } from "@/lib/orders";
 import { formatFecha, formatFechaHora, formatMoneda } from "@/lib/format";
 import { ESTADO_LABEL, PRIORIDAD_LABEL, ROL_LABEL, TIPO_PRODUCTO_LABEL, UNIDAD_LABEL } from "@/lib/labels";
 import { ESPEC_LABEL } from "@/lib/especificaciones";
+import { MARCA } from "@/lib/marca";
 import { BotonImprimir } from "./boton-imprimir";
 
 export const metadata: Metadata = { title: "Imprimir orden" };
@@ -48,7 +49,7 @@ export default async function ImprimirOrdenPage({ params, searchParams }: PagePr
           <Link href={`/ordenes/${orden.id}`} className="text-sm text-slate-500 hover:text-slate-900">
             ← Volver a la orden
           </Link>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-navy-950">Hoja de la orden {orden.numero}</h1>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-turbo-950">Hoja de la orden {orden.numero}</h1>
           <p className="mt-1 text-sm text-slate-500">
             En el diálogo de impresión elige «Guardar como PDF» para descargarla.
           </p>
@@ -71,19 +72,21 @@ export default async function ImprimirOrdenPage({ params, searchParams }: PagePr
 
       {/* Hoja */}
       <article className="mx-auto max-w-[210mm] bg-white p-8 text-[13px] leading-relaxed text-slate-900 shadow-[0_12px_40px_-12px_rgb(15_23_42/0.25)] ring-1 ring-slate-200 print:max-w-none print:p-0 print:shadow-none print:ring-0 sm:p-12">
-        <header className="flex items-start justify-between gap-6 border-b-2 border-navy-900 pb-5">
-          <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-navy-900 text-sm font-bold text-brand-200">
-              OP
-            </span>
+        <header className="flex items-start justify-between gap-6 border-b-2 border-brand-600 pb-5">
+          <div className="flex items-center gap-3.5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={MARCA.logoColor} alt={MARCA.nombre} className="h-14 w-auto" />
             <div className="leading-tight">
-              <p className="text-base font-semibold">Órdenes de Producción</p>
-              <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Subwoofers y altavoces a medida</p>
+              <p className="font-display text-lg font-bold tracking-wide text-turbo-950">{MARCA.nombre}</p>
+              <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500">{MARCA.descripcion}</p>
+              <p className="mt-1 text-[11px] text-slate-600">
+                WhatsApp {MARCA.whatsapp} · Instagram {MARCA.instagram}
+              </p>
             </div>
           </div>
           <div className="text-right">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Orden de producción</p>
-            <p className="font-mono text-3xl font-bold tracking-tight text-navy-950">{orden.numero}</p>
+            <p className="font-mono text-3xl font-bold tracking-tight text-turbo-950">{orden.numero}</p>
             <p className="mt-1 text-xs text-slate-600">
               {ESTADO_LABEL[orden.estado]} · Prioridad {PRIORIDAD_LABEL[orden.prioridad].toLowerCase()}
             </p>
@@ -243,10 +246,17 @@ export default async function ImprimirOrdenPage({ params, searchParams }: PagePr
           ))}
         </div>
 
-        <footer className="mt-8 flex justify-between border-t border-slate-200 pt-3 text-[10px] text-slate-400">
+        {conPrecios && (
+          <p className="mt-8 rounded-md bg-brand-50 px-4 py-2.5 text-center text-[11px] text-turbo-800">
+            Medios de pago: <span className="font-semibold">{MARCA.pagos}</span> · WhatsApp {MARCA.whatsapp}
+          </p>
+        )}
+
+        <footer className="mt-8 flex justify-between gap-4 border-t border-slate-200 pt-3 text-[10px] text-slate-400">
           <span>
             {orden.numero} · {orden.cliente.nombre}
           </span>
+          <span className="font-display tracking-wide">{MARCA.slogan}</span>
           <span>Impresa el {formatFechaHora(new Date().toISOString())}</span>
         </footer>
       </article>
@@ -274,7 +284,7 @@ function Opcion({ activa, href, children }: { activa: boolean; href: string; chi
 function Seccion({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
     <section className="mt-6 break-inside-avoid-page">
-      <h2 className="mb-2.5 border-b border-slate-200 pb-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-navy-900">
+      <h2 className="mb-2.5 border-b border-slate-200 pb-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-turbo-900">
         {titulo}
       </h2>
       {children}
@@ -285,7 +295,7 @@ function Seccion({ titulo, children }: { titulo: string; children: React.ReactNo
 function Bloque({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
     <div className="break-inside-avoid">
-      <h2 className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-navy-900">{titulo}</h2>
+      <h2 className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-turbo-900">{titulo}</h2>
       <div className="space-y-0.5">{children}</div>
     </div>
   );

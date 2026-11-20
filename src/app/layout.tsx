@@ -1,10 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Inter, Orbitron } from "next/font/google";
+import { MARCA } from "@/lib/marca";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+});
+
+const orbitron = Orbitron({
+  variable: "--font-orbitron",
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -13,17 +20,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: { default: "Órdenes de Producción", template: "%s · Órdenes de Producción" },
-  description: "Gestión de órdenes de producción de subwoofers y altavoces a medida",
+  title: { default: `Órdenes · ${MARCA.nombre}`, template: `%s · ${MARCA.corto}` },
+  description: `Gestión de órdenes de fabricación de ${MARCA.nombre}: ${MARCA.descripcion.toLowerCase()}.`,
 };
 
 export const viewport: Viewport = {
-  themeColor: "#10213f",
+  themeColor: "#130a26",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html
+      lang="es"
+      className={`${inter.variable} ${orbitron.variable} ${geistMono.variable} h-full antialiased`}
+    >
       <body className="min-h-full font-sans">{children}</body>
     </html>
   );

@@ -103,7 +103,7 @@ export default async function PanelPage({ searchParams }: PageProps<"/">) {
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
         <section className="card lg:col-span-2" aria-labelledby="titulo-grafico">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-6 py-4">
-            <h2 id="titulo-grafico" className="font-semibold text-navy-950">
+            <h2 id="titulo-grafico" className="font-semibold text-turbo-950">
               Órdenes nuevas vs. entregas previstas
             </h2>
             <Leyenda />
@@ -115,7 +115,7 @@ export default async function PanelPage({ searchParams }: PageProps<"/">) {
 
         <section className="card" aria-labelledby="titulo-carga">
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-            <h2 id="titulo-carga" className="font-semibold text-navy-950">
+            <h2 id="titulo-carga" className="font-semibold text-turbo-950">
               Carga por estado
             </h2>
             <span className="text-sm text-slate-400">{resumen.activas} activas</span>
@@ -146,7 +146,7 @@ export default async function PanelPage({ searchParams }: PageProps<"/">) {
 
       <section className="card mt-6 overflow-hidden" aria-labelledby="titulo-entregas">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-6 py-4">
-          <h2 id="titulo-entregas" className="font-semibold text-navy-950">
+          <h2 id="titulo-entregas" className="font-semibold text-turbo-950">
             Próximas entregas
           </h2>
           <Link href="/ordenes?orden=entrega" className="text-sm text-slate-500 hover:text-brand-700">
@@ -333,7 +333,7 @@ function Kpi({
           <Icon name={icon} className="h-5 w-5" />
         </span>
       </div>
-      <p className="mt-3 font-mono text-4xl font-semibold tabular-nums tracking-tight text-navy-950">{value}</p>
+      <p className="mt-3 font-display text-4xl font-bold tabular-nums tracking-wide text-turbo-950">{value}</p>
       <div className="mt-4 flex items-center gap-2.5 text-sm text-slate-500">
         <span className={`shrink-0 rounded-md px-2 py-1 font-mono text-xs font-semibold ${TONO[chip.tone]}`}>{chip.text}</span>
         <span className="leading-snug">{detalle}</span>

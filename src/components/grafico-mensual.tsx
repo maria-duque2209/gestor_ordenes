@@ -11,8 +11,8 @@ export interface PuntoMensual {
   b: number;
 }
 
-export const SERIE_A = { nombre: "Órdenes nuevas", color: "#1f4f9e" };
-export const SERIE_B = { nombre: "Entregas previstas", color: "#6f9be0" };
+export const SERIE_A = { nombre: "Órdenes nuevas", color: "#5b2be0" };
+export const SERIE_B = { nombre: "Entregas previstas", color: "#1fb8e0" };
 
 function escala(max: number) {
   const raw = Math.max(1, max) / 4;
@@ -77,7 +77,7 @@ export function GraficoMensual({ datos }: { datos: PuntoMensual[] }) {
                   className="w-3 rounded-t-[4px] sm:w-4"
                   style={{ height: pct(d.b), background: SERIE_B.color }}
                 />
-                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden w-max -translate-x-1/2 rounded-lg bg-navy-950 px-3 py-2 text-xs text-white shadow-lg group-hover:block group-focus-visible:block">
+                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden w-max -translate-x-1/2 rounded-lg bg-turbo-950 px-3 py-2 text-xs text-white shadow-lg group-hover:block group-focus-visible:block">
                   <p className="mb-1 font-semibold capitalize">{d.etiqueta}</p>
                   <p className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-sm" style={{ background: SERIE_A.color }} />

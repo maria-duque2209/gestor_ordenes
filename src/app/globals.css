@@ -1,27 +1,36 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-orbitron), var(--font-inter), ui-sans-serif, sans-serif;
 }
 
-/* Paleta del panel: barra lateral azul marino + acento azul. */
+/* Marca TURBO STEVEN AUDIO: negro violáceo + violeta, con magenta y cian de acento. */
 @theme {
-  --color-navy-950: #0b1730;
-  --color-navy-900: #10213f;
-  --color-navy-800: #182d52;
-  --color-navy-700: #233b66;
-  --color-navy-600: #34508a;
+  --color-turbo-950: #0a0614;
+  --color-turbo-900: #130a26;
+  --color-turbo-800: #1c1138;
+  --color-turbo-700: #2a1a52;
+  --color-turbo-600: #3d2a72;
 
-  --color-brand-700: #1f4f9e;
-  --color-brand-600: #2a5cad;
-  --color-brand-500: #3a6cc0;
-  --color-brand-300: #6f9be0;
-  --color-brand-200: #b9cdee;
-  --color-brand-100: #e3ebf8;
-  --color-brand-50: #f1f5fb;
+  --color-brand-700: #4a1fc4;
+  --color-brand-600: #5b2be0;
+  --color-brand-500: #7440f0;
+  --color-brand-300: #9a4fff;
+  --color-brand-200: #cdb6ff;
+  --color-brand-100: #ece4ff;
+  --color-brand-50: #f6f2ff;
 
-  --color-canvas: #eef2f7;
+  --color-magenta: #b04fff;
+  --color-cian: #35d6ff;
+
+  --color-canvas: #f3f1f8;
+}
+
+/* Degradado de marca (violeta → magenta), como el emblema. */
+@utility bg-marca {
+  background-image: linear-gradient(135deg, #5b2be0 0%, #9a4fff 55%, #b04fff 100%);
 }
 
 :root {
@@ -55,7 +64,7 @@ body {
 }
 
 @utility btn-primary {
-  @apply btn bg-navy-900 text-white shadow-sm hover:bg-navy-800;
+  @apply btn bg-brand-600 text-white shadow-sm shadow-brand-600/25 hover:bg-brand-700;
 }
 
 @utility btn-secondary {

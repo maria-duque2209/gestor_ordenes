@@ -1,6 +1,6 @@
-# Órdenes de Producción
+# TURBO STEVEN AUDIO · Órdenes de fabricación
 
-Aplicación web para crear, asignar, seguir e imprimir órdenes de producción de subwoofers y altavoces a medida.
+Aplicación web de TURBO STEVEN AUDIO para crear, asignar, seguir e imprimir órdenes de fabricación de parlantes picó personalizados y mini turbos.
 
 **Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Supabase (PostgreSQL, Auth, Storage, RLS)
 

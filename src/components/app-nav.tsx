@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { logout } from "@/app/login/actions";
 import { ROL_LABEL } from "@/lib/labels";
+import { MARCA } from "@/lib/marca";
 import { NAV_SECTION_LABEL, type NavItem, type NavSection } from "@/lib/nav";
 import type { CurrentUser } from "@/lib/auth";
 import { Icon } from "./icons";
@@ -28,7 +29,14 @@ function migas(pathname: string, items: NavItem[]): { label: string; href?: stri
   ];
   segs.slice(1).forEach((s, i) => {
     const href = `/${segs.slice(0, i + 2).join("/")}`;
-    const label = s === "nueva" || s === "nuevo" ? "Nuevo registro" : s === "editar" ? "Editar" : "Detalle";
+    const label =
+      s === "nueva" || s === "nuevo"
+        ? "Nuevo registro"
+        : s === "editar"
+          ? "Editar"
+          : s === "imprimir"
+            ? "Imprimir"
+            : "Detalle";
     out.push({ label, href });
   });
   out[out.length - 1].href = undefined;
@@ -37,18 +45,21 @@ function migas(pathname: string, items: NavItem[]): { label: string; href?: stri
 
 function Brand({ compact = false }: { compact?: boolean }) {
   return (
-    <Link href="/" className="flex items-center gap-3">
+    <Link href="/" className="flex items-center gap-3" aria-label={`${MARCA.nombre} · inicio`}>
       <span
-        className={`flex shrink-0 items-center justify-center rounded-xl bg-white/10 font-bold text-brand-200 ring-1 ring-white/15 ${
-          compact ? "h-8 w-8 text-xs" : "h-10 w-10 text-sm"
+        className={`bg-marca flex shrink-0 items-center justify-center rounded-xl shadow-lg shadow-brand-600/30 ${
+          compact ? "h-8 w-8 p-1.5" : "h-10 w-10 p-2"
         }`}
       >
-        OP
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={MARCA.logoBlanco} alt="" className="h-full w-full object-contain" />
       </span>
       <span className="leading-tight">
-        <span className="block text-[15px] font-semibold text-white">Órdenes de Producción</span>
+        <span className="block font-display text-[14px] font-bold tracking-wide text-white">{MARCA.corto}</span>
         {!compact && (
-          <span className="block text-[10px] font-medium uppercase tracking-[0.22em] text-slate-400">Taller · Audio</span>
+          <span className="block text-[10px] font-medium uppercase tracking-[0.22em] text-brand-200/70">
+            Audio · Órdenes
+          </span>
         )}
       </span>
     </Link>
@@ -101,14 +112,14 @@ export function AppNav({ user, items }: { user: CurrentUser; items: NavItem[] })
               return (
                 <li key={item.href} className="relative">
                   {active && (
-                    <span className="absolute -left-4 top-1.5 bottom-1.5 w-1 rounded-r-full bg-brand-300" aria-hidden="true" />
+                    <span className="absolute -left-4 top-1.5 bottom-1.5 w-1 rounded-r-full bg-cian shadow-[0_0_12px_#35d6ff]" aria-hidden="true" />
                   )}
                   <Link
                     href={item.href}
                     onClick={cerrar}
                     aria-current={active ? "page" : undefined}
                     className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                      active ? "bg-navy-700 text-white" : "text-slate-300 hover:bg-white/5 hover:text-white"
+                      active ? "bg-turbo-700 text-white" : "text-slate-300 hover:bg-white/5 hover:text-white"
                     }`}
                   >
                     <Icon name={item.icon} className={`h-5 w-5 ${active ? "text-brand-200" : "text-slate-400"}`} />
@@ -127,7 +138,7 @@ export function AppNav({ user, items }: { user: CurrentUser; items: NavItem[] })
   const userBox = (
     <div className="border-t border-white/10 p-4">
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-sm font-semibold text-white">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-marca text-sm font-semibold text-white">
           {iniciales(nombre)}
         </span>
         <div className="min-w-0 flex-1">
@@ -172,7 +183,7 @@ export function AppNav({ user, items }: { user: CurrentUser; items: NavItem[] })
   return (
     <>
       {/* Escritorio: barra lateral fija */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 flex-col bg-navy-900 lg:flex print:!hidden">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 flex-col bg-turbo-900 lg:flex print:!hidden">
         <div className="flex h-[72px] items-center border-b border-white/10 px-6">
           <Brand />
         </div>
@@ -205,7 +216,7 @@ export function AppNav({ user, items }: { user: CurrentUser; items: NavItem[] })
       </header>
 
       {/* Móvil: barra superior + panel deslizable */}
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between bg-navy-900 px-4 lg:hidden print:hidden">
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between bg-turbo-900 px-4 lg:hidden print:hidden">
         <Brand compact />
         <button
           type="button"
@@ -220,8 +231,8 @@ export function AppNav({ user, items }: { user: CurrentUser; items: NavItem[] })
 
       {open && (
         <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true">
-          <button type="button" className="absolute inset-0 bg-navy-950/60" aria-label="Cerrar menú" onClick={cerrar} />
-          <div className="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col bg-navy-900">
+          <button type="button" className="absolute inset-0 bg-turbo-950/60" aria-label="Cerrar menú" onClick={cerrar} />
+          <div className="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col bg-turbo-900">
             <div className="flex h-14 items-center justify-between border-b border-white/10 px-4">
               <Brand compact />
               <button
