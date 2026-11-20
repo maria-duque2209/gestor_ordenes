@@ -20,6 +20,7 @@ export function NotasOrden({ orderId, notas }: { orderId: string; notas: NotaVis
   return (
     <div className="space-y-4">
       <form action={action} className="space-y-2">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
         <label htmlFor="texto" className="sr-only">
           Nueva nota
         </label>
@@ -29,14 +30,15 @@ export function NotasOrden({ orderId, notas }: { orderId: string; notas: NotaVis
           rows={2}
           maxLength={2000}
           required
-          className="input"
+          className="input flex-1"
           placeholder="Escribe una nota de avance…"
         />
+          <SubmitButton className="btn-secondary shrink-0 sm:h-[62px]" pendingText="Guardando…">
+            Añadir nota
+          </SubmitButton>
+        </div>
         {state.fieldErrors?.texto && <p className="text-sm text-red-600">{state.fieldErrors.texto[0]}</p>}
         {state.error && <FormAlert state={state} />}
-        <SubmitButton className="btn-secondary" pendingText="Guardando…">
-          Añadir nota
-        </SubmitButton>
       </form>
 
       {notas.length === 0 ? (

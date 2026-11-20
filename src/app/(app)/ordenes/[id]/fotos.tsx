@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { PhotoPicker } from "@/components/photo-picker";
+import { Icon } from "@/components/icons";
 import { formatFechaHora } from "@/lib/format";
 import { subirFotos, type FotoPendiente } from "@/lib/photos-client";
 import { eliminarFoto } from "../actions";
@@ -50,7 +51,10 @@ export function FotosOrden({ orderId, fotos, puedeSubir }: { orderId: string; fo
   return (
     <div className="space-y-4">
       {fotos.length === 0 ? (
-        <p className="text-sm text-slate-500">Aún no hay fotos.</p>
+        <p className="flex items-center justify-center gap-2.5 rounded-xl border-2 border-dashed border-slate-200 px-4 py-5 text-sm text-slate-500">
+          <Icon name="camera" className="h-5 w-5 text-brand-600" />
+          Aún no hay fotos.
+        </p>
       ) : (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {fotos.map((f, i) => (

@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { FormAlert, SubmitButton } from "@/components/form";
+import { Icon } from "@/components/icons";
 import { ESTADO_LABEL } from "@/lib/labels";
 import { siguienteEstado } from "@/lib/estados";
 import type { FormState } from "@/lib/forms";
@@ -50,7 +51,8 @@ export function EstadoForm({
         <textarea id="nota-estado" name="nota" rows={2} maxLength={2000} className="input" placeholder="Motivo o comentario del cambio" />
       </div>
       <FormAlert state={state} />
-      <SubmitButton pendingText="Cambiando…" className="btn-primary w-full">
+      <SubmitButton pendingText="Cambiando…" className="btn w-full bg-turbo-900 text-white shadow-sm hover:bg-turbo-800">
+        <Icon name="refresh" className="h-4 w-4" />
         Cambiar estado
       </SubmitButton>
     </form>

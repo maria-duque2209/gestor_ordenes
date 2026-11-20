@@ -12,7 +12,7 @@ export function EliminarOrden({ orderId, numero }: { orderId: string; numero: st
 
   if (!confirmando) {
     return (
-      <button type="button" onClick={() => setConfirmando(true)} className="btn border border-red-300 text-red-700 hover:bg-red-50">
+      <button type="button" onClick={() => setConfirmando(true)} className="btn border border-red-300 bg-white text-red-700 hover:bg-red-50">
         Eliminar orden…
       </button>
     );

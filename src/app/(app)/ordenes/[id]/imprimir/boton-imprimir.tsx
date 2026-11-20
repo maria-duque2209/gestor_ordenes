@@ -18,7 +18,7 @@ export function BotonImprimir({ nombreArchivo }: { nombreArchivo: string }) {
         document.title = anterior;
       }}
     >
-      <Icon name="orders" className="h-4 w-4" />
+      <Icon name="printer" className="h-4 w-4" />
       Imprimir / Guardar PDF
     </button>
   );
