@@ -7,6 +7,8 @@ import { EstadoBadge, PrioridadBadge, RolBadge } from "@/components/badges";
 import { formatFecha, formatFechaHora, formatMoneda } from "@/lib/format";
 import { TIPO_PRODUCTO_LABEL, UNIDAD_LABEL } from "@/lib/labels";
 import { estadosPermitidos, alertaEntrega, textoAlerta } from "@/lib/estados";
+import { ESPEC_LABEL } from "@/lib/especificaciones";
+import { Icon } from "@/components/icons";
 import { FotosOrden } from "./fotos";
 import { EstadoForm } from "./estado-form";
 import { NotasOrden } from "./notas";
@@ -14,12 +16,6 @@ import { EliminarOrden } from "./eliminar-orden";
 
 export const metadata: Metadata = { title: "Orden" };
 
-const ESPEC_LABEL: Record<string, string> = {
-  potencia: "Potencia",
-  impedancia: "Impedancia",
-  tamano_driver: "Tamaño del driver",
-  tipo_caja: "Tipo de caja",
-};
 
 function Card({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) {
   return (
@@ -70,13 +66,17 @@ export default async function OrdenPage({ params, searchParams }: PageProps<"/or
             {TIPO_PRODUCTO_LABEL[orden.tipo_producto]} para <span className="font-medium">{orden.cliente.nombre}</span>
           </p>
         </div>
-        {gestiona && (
-          <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Link href={`/ordenes/${orden.id}/imprimir`} className="btn-secondary">
+            <Icon name="orders" className="h-4 w-4" />
+            Imprimir / PDF
+          </Link>
+          {gestiona && (
             <Link href={`/ordenes/${orden.id}/editar`} className="btn-secondary">
               Editar
             </Link>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {sp.creada && (

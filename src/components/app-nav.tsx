@@ -172,7 +172,7 @@ export function AppNav({ user, items }: { user: CurrentUser; items: NavItem[] })
   return (
     <>
       {/* Escritorio: barra lateral fija */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 flex-col bg-navy-900 lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 flex-col bg-navy-900 lg:flex print:!hidden">
         <div className="flex h-[72px] items-center border-b border-white/10 px-6">
           <Brand />
         </div>
@@ -180,7 +180,7 @@ export function AppNav({ user, items }: { user: CurrentUser; items: NavItem[] })
       </aside>
 
       {/* Escritorio: barra superior con migas y búsqueda */}
-      <header className="sticky top-0 z-20 hidden h-[72px] items-center justify-between gap-6 border-b border-slate-200 bg-white/85 px-8 backdrop-blur lg:flex">
+      <header className="sticky top-0 z-20 hidden print:!hidden h-[72px] items-center justify-between gap-6 border-b border-slate-200 bg-white/85 px-8 backdrop-blur lg:flex">
         <nav aria-label="Ruta" className="min-w-0">
           <ol className="flex items-center gap-2 text-sm">
             {ruta.map((m, i) => (
@@ -205,7 +205,7 @@ export function AppNav({ user, items }: { user: CurrentUser; items: NavItem[] })
       </header>
 
       {/* Móvil: barra superior + panel deslizable */}
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between bg-navy-900 px-4 lg:hidden">
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between bg-navy-900 px-4 lg:hidden print:hidden">
         <Brand compact />
         <button
           type="button"

@@ -61,3 +61,17 @@ body {
 @utility btn-secondary {
   @apply btn border border-slate-300 bg-white text-slate-700 shadow-sm hover:bg-slate-50;
 }
+
+/* Impresión / PDF: hoja A4 limpia, sin fondo ni sombras. */
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+@media print {
+  body {
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
