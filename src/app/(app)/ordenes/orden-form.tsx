@@ -28,11 +28,14 @@ export function OrdenForm({
   clientes,
   usuarios,
   verPrecio,
+  enModal = false,
 }: {
   orden?: OrdenDetalle;
   clientes: ClienteOpcion[];
   usuarios: Responsable[];
   verPrecio: boolean;
+  /** Dentro del modal «Nueva orden»: Cancelar cierra el modal y el scroll es el del modal. */
+  enModal?: boolean;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -59,7 +62,8 @@ export function OrdenForm({
       if (!res.ok || !res.id) {
         setState(res);
         setPaso(null);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        const contenedor = enModal ? document.querySelector("[data-modal-scroll]") : null;
+        (contenedor ?? window).scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
       let fotosError = 0;
@@ -306,13 +310,25 @@ export function OrdenForm({
         </Section>
       )}
 
-      <div className="sticky bottom-0 -mx-4 flex flex-wrap items-center gap-3 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0">
+      <div
+        className={
+          enModal
+            ? "sticky bottom-0 -mx-4 flex flex-wrap items-center gap-3 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6"
+            : "sticky bottom-0 -mx-4 flex flex-wrap items-center gap-3 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0"
+        }
+      >
         <button type="submit" disabled={pending} className="btn-primary">
           {pending ? (paso ?? "Guardando…") : orden ? "Guardar cambios" : "Crear orden"}
         </button>
-        <Link href={orden ? `/ordenes/${orden.id}` : "/ordenes"} className="btn-secondary">
-          Cancelar
-        </Link>
+        {enModal ? (
+          <button type="button" onClick={() => router.back()} disabled={pending} className="btn-secondary">
+            Cancelar
+          </button>
+        ) : (
+          <Link href={orden ? `/ordenes/${orden.id}` : "/ordenes"} className="btn-secondary">
+            Cancelar
+          </Link>
+        )}
         {state.fieldErrors && <span className="text-sm text-red-600">Revisa los campos marcados.</span>}
       </div>
     </form>

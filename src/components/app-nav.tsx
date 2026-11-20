@@ -216,17 +216,17 @@ export function AppNav({ user, items }: { user: CurrentUser; items: NavItem[] })
       </header>
 
       {/* Móvil: barra superior + panel deslizable */}
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between bg-turbo-900 px-4 lg:hidden print:hidden">
-        <Brand compact />
+      <header className="sticky top-0 z-30 flex h-14 items-center gap-2 bg-turbo-900 px-4 lg:hidden print:hidden">
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="-mr-2 rounded-lg p-2 text-slate-200 hover:bg-white/10"
+          className="-ml-2 rounded-lg p-2 text-slate-200 hover:bg-white/10"
           aria-label="Abrir menú"
           aria-expanded={open}
         >
           <Icon name="menu" className="h-6 w-6" />
         </button>
+        <Brand compact />
       </header>
 
       {open && (

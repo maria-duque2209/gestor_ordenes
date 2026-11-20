@@ -1,13 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useActionState } from "react";
 import { Field, FormAlert, SubmitButton, initial } from "@/components/form";
 import type { FormState } from "@/lib/forms";
 import type { Client } from "@/lib/types";
 import { guardarCliente } from "./actions";
 
-export function ClienteForm({ cliente }: { cliente?: Client }) {
+/** `enModal`: dentro del modal «Nuevo cliente», Cancelar cierra el modal. */
+export function ClienteForm({ cliente, enModal = false }: { cliente?: Client; enModal?: boolean }) {
+  const router = useRouter();
   const [state, action] = useActionState<FormState, FormData>(guardarCliente.bind(null, cliente?.id ?? null), {});
   const v = (name: keyof Client) => initial(state, name, cliente?.[name] as string | null | undefined);
 
@@ -47,9 +50,15 @@ export function ClienteForm({ cliente }: { cliente?: Client }) {
 
       <div className="flex flex-wrap gap-2">
         <SubmitButton>{cliente ? "Guardar cambios" : "Crear cliente"}</SubmitButton>
-        <Link href={cliente ? `/clientes/${cliente.id}` : "/clientes"} className="btn-secondary">
-          Cancelar
-        </Link>
+        {enModal ? (
+          <button type="button" onClick={() => router.back()} className="btn-secondary">
+            Cancelar
+          </button>
+        ) : (
+          <Link href={cliente ? `/clientes/${cliente.id}` : "/clientes"} className="btn-secondary">
+            Cancelar
+          </Link>
+        )}
       </div>
     </form>
   );

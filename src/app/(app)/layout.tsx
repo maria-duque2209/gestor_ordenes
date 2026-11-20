@@ -8,15 +8,15 @@ import { AppNav } from "@/components/app-nav";
  * <Suspense> (requisito de Cache Components): el esqueleto se muestra al
  * instante y el menú y el contenido llegan en streaming.
  */
-export default function AppLayout({ children }: LayoutProps<"/">) {
+export default function AppLayout({ children, modal }: LayoutProps<"/">) {
   return (
     <Suspense fallback={<ShellSkeleton />}>
-      <AppShell>{children}</AppShell>
+      <AppShell modal={modal}>{children}</AppShell>
     </Suspense>
   );
 }
 
-async function AppShell({ children }: { children: React.ReactNode }) {
+async function AppShell({ children, modal }: { children: React.ReactNode; modal: React.ReactNode }) {
   const user = await getCurrentUser();
   const items = navForRole(user.rol);
 
@@ -24,6 +24,8 @@ async function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-dvh lg:pl-72 print:pl-0">
       <AppNav user={user} items={items} />
       <main className="mx-auto w-full max-w-7xl px-4 pb-12 pt-5 sm:px-6 lg:px-8 lg:pt-8 print:max-w-none print:p-0">{children}</main>
+      {/* Slot @modal: «Nueva orden» abierta desde la app */}
+      {modal}
     </div>
   );
 }

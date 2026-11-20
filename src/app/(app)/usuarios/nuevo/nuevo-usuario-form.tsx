@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useActionState, useState } from "react";
 import { Field, FormAlert, SubmitButton, initial } from "@/components/form";
 import type { FormState } from "@/lib/forms";
@@ -12,7 +13,9 @@ const ROL_AYUDA = {
   taller: "Ve sus órdenes asignadas, cambia el estado y añade notas y fotos. No ve precios.",
 } as const;
 
-export function NuevoUsuarioForm() {
+/** `enModal`: dentro del modal «Nuevo usuario» se muestra Cancelar, que cierra el modal. */
+export function NuevoUsuarioForm({ enModal = false }: { enModal?: boolean }) {
+  const router = useRouter();
   const [state, action] = useActionState<FormState, FormData>(crearUsuario, {});
   const [modo, setModo] = useState(initial(state, "modo", "invitar"));
   const [rol, setRol] = useState(initial(state, "rol", "taller") as keyof typeof ROL_AYUDA);
@@ -94,7 +97,14 @@ export function NuevoUsuarioForm() {
 
       <FormAlert state={state} />
 
-      <SubmitButton pendingText="Creando…">{modo === "invitar" ? "Enviar invitación" : "Crear usuario"}</SubmitButton>
+      <div className="flex flex-wrap gap-2">
+        <SubmitButton pendingText="Creando…">{modo === "invitar" ? "Enviar invitación" : "Crear usuario"}</SubmitButton>
+        {enModal && (
+          <button type="button" onClick={() => router.back()} className="btn-secondary">
+            Cancelar
+          </button>
+        )}
+      </div>
     </form>
   );
 }
